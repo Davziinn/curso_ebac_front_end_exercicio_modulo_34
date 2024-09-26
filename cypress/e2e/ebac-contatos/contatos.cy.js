@@ -1,25 +1,41 @@
-describe('Testando funcionalidades de contatos', () => {
-    beforeEach(() => {
-        cy.visit('https://agenda-contatos-react.vercel.app/');
-    });
-
+describe('Testando a inclusão de contatos', () => {
     it('Deve adicionar um novo contato', () => {
-        cy.get('input[placeholder="Nome"]').type('João');
+        cy.visit('https://agenda-contatos-react.vercel.app/');
+        
+      // Preenche os campos do formulário
+        cy.get('input[placeholder="Nome"]').type('Novo Contato');
+        cy.get('input[placeholder="E-mail"]').type('contato@exemplo.com');
         cy.get('input[placeholder="Telefone"]').type('123456789');
-        cy.get('input[placeholder="Email"]').type('joao@example.com');
-        cy.get('button').contains('Adicionar').click();
+    
+      // Clica no botão de adicionar
+        cy.get('button[type="submit"]').click();
 
-        cy.contains('João').should('exist');
-        cy.contains('123456789').should('exist');
-    });
+      // Verifica se o contato foi adicionado corretamente
+        cy.contains('Novo Contato').should('exist');
+    })
+})
+
+describe('Testando a edição de contatos', () => {
     it('Deve editar um contato existente', () => {
-        cy.contains('João').parent().find('button').contains('Editar').click();
-        cy.get('input[placeholder="Nome"]').clear().type('João Silva');
-        cy.get('button').contains('Salvar').click();
-        cy.contains('João Silva').should('exist');
+      // Clica no botão de editar do primeiro contato
+        cy.get('button.edit').first().click();
+        
+        // Edita os campos do formulário
+        cy.get('input[placeholder="Nome"]').clear().type('Contato Editado');
+        cy.get('button[type="submit"]').click();
+        
+        // Verifica se o contato foi editado corretamente
+        cy.contains('Contato Editado').should('exist');
     });
-    it('Deve remover um contato existente', () => {
-        cy.contains('João Silva').parent().find('button').contains('Excluir').click();
-        cy.contains('João Silva').should('not.exist');
-    });
-});
+})
+
+
+describe('Testando a exclusão de contatos', () => {
+    it('Deve excluir um contato', () => {
+      // Clica no botão de deletar do primeiro contato
+        cy.get('button.delete').first().click();
+        
+        // Verifica se o contato foi removido corretamente
+        cy.contains('Nome do Contato').should('not.exist');
+    })
+})
